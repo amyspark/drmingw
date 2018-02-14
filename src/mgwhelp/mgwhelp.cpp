@@ -594,8 +594,7 @@ MgwSymFromAddr(HANDLE hProcess, DWORD64 Address, PDWORD64 Displacement, PSYMBOL_
                 }
             }
             if (Displacement) {
-                /* TODO */
-                *Displacement = 0;
+                *Displacement = info.offsetAddr;
             }
             return TRUE;
         }
