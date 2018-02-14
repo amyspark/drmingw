@@ -34,6 +34,9 @@ extern "C" {
 
 struct dwarf_symbol_info {
     std::string functionname;
+    unsigned int offsetAddr;
+    unsigned int line;
+    bool found;
 };
 
 struct dwarf_line_info {

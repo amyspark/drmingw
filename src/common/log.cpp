@@ -223,6 +223,7 @@ dumpStack(HANDLE hProcess, HANDLE hThread, const CONTEXT *pContext)
 
         BOOL bSymbol = TRUE;
         BOOL bLine = FALSE;
+        DWORD dwSymbolOffset = 0;
 
         DWORD64 AddrPC = StackFrame.AddrPC.Offset;
         HMODULE hModule = (HMODULE)(INT_PTR)SymGetModuleBase64(hProcess, AddrPC);
@@ -230,9 +231,9 @@ dumpStack(HANDLE hProcess, HANDLE hThread, const CONTEXT *pContext)
         if (hModule && GetModuleFileNameExA(hProcess, hModule, szModule, MAX_PATH)) {
             lprintf("  %s", getBaseName(szModule));
 
-            bSymbol = GetSymFromAddr(hProcess, AddrPC + nudge, szSymName, MAX_SYM_NAME_SIZE);
+            bSymbol = GetSymFromAddrWithOffset(hProcess, AddrPC + nudge, szSymName, MAX_SYM_NAME_SIZE, &dwSymbolOffset);
             if (bSymbol) {
-                lprintf("!%s", szSymName);
+                lprintf( "!0x%I64x %s+0x%lx", AddrPC - (DWORD64)(INT_PTR)hModule, szSymName, dwSymbolOffset - nudge);
 
                 bLine =
                     GetLineFromAddr(hProcess, AddrPC + nudge, szFileName, MAX_PATH, &dwLineNumber);
